@@ -2,13 +2,10 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use App\CsvReader;
+use App\CsvReaderForReport;
 
-$test = new CsvReader();
-//$data = [];
-foreach ($test->getRowsChunks("/var/www/internship_1/report.csv") as $row) {
+$csvReaderForReport = new CsvReaderForReport();
+
+foreach ($csvReaderForReport->getRowsChunks("/var/www/internship_1/report.csv", 2) as $row) {
     var_dump($row);
 }
-//$data = (object) $test->getHeaders("/var/www/internship_1/report.csv");
-//$data = $test->getRow2("/var/www/internship_1/report.csv");
-//var_dump($data);

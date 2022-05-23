@@ -4,7 +4,7 @@ namespace App;
 
 use Generator;
 
-class CsvReader
+class CsvReaderForReport
 {
     private const SEPARATOR = ";";
     private const DEFAULT_CHUNK_SIZE = 3;
@@ -32,6 +32,8 @@ class CsvReader
 
     public function getRowsChunks($fileReportCsv, $chunkSize = self::DEFAULT_CHUNK_SIZE): Generator
     {
+        $chunkSize = self::chunkSizeCorrect($chunkSize);
+
         $rows = [];
 
         foreach (self::getRows($fileReportCsv) as $row)
@@ -46,6 +48,15 @@ class CsvReader
 
         yield $rows;
 
+    }
+
+    private static function chunkSizeCorrect(int $chunkSize): int
+    {
+       if ($chunkSize <= 0) {
+           $chunkSize = self::DEFAULT_CHUNK_SIZE;
+       }
+
+       return $chunkSize;
     }
 
     private function getHeaders($fileReportCsv): bool|array
