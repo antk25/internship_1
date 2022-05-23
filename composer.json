@@ -1,0 +1,17 @@
+{
+    "name": "smg25/internship_1",
+    "description": "CSV Reader",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Anton Kunaev",
+            "email": "kunaevanton25@gmail.com"
+        }
+    ],
+    "require": {}
+}
