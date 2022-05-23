@@ -8,6 +8,7 @@ class CsvReaderForReport
 {
     private const SEPARATOR = ";";
     private const DEFAULT_CHUNK_SIZE = 3;
+
     private OpenCloseCsvFile $openCloseCsvFile;
 
     public function __construct($openCloseCsvFile = new OpenCloseCsvFile())
@@ -24,6 +25,7 @@ class CsvReaderForReport
 
         while (!feof($handle)) {
             $values = fgetcsv($handle, separator: self::SEPARATOR);
+
             yield self::createRow($headers, $values);
         }
 
@@ -47,7 +49,6 @@ class CsvReaderForReport
         }
 
         yield $rows;
-
     }
 
     private static function chunkSizeCorrect(int $chunkSize): int
