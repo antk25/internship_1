@@ -57,11 +57,17 @@ class CsvReaderForReport
        return $chunkSize;
     }
 
-    private function getHeaders($fileReportCsv): bool|array
+    private function getHeaders($fileReportCsv): array
     {
         $handle = $this->openCloseFile->openFile($fileReportCsv);
 
-        return fgetcsv($handle, separator: self::SEPARATOR);
+        $headers = fgetcsv($handle, separator: self::SEPARATOR);
+
+        if ($headers === false) {
+            $headers = [];
+        }
+
+        return $headers;
     }
 
     private function createItemFromRow(array $headers, array $values): object
