@@ -4,12 +4,12 @@ namespace App;
 
 class Row
 {
-    public function __construct(private readonly array|bool $headers, private readonly array|bool $values)
+    public function __construct(private readonly array $headers, private readonly array $values)
     {
 
     }
 
-    public function createCell(): object
+    public function createItem(): object
     {
         return (object) array_combine($this->headers, $this->values);
     }

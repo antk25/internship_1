@@ -2,44 +2,41 @@
 
 namespace App;
 
-use Generator;
+use App\Interfaces\OpenCloseFileInterface;
 
 class CsvReaderForReport
 {
-    private const SEPARATOR = ";";
+    private const SEPARATOR = ';';
     private const DEFAULT_CHUNK_SIZE = 3;
 
-    private OpenCloseCsvFile $openCloseCsvFile;
+    private OpenCloseFileInterface $openCloseFile;
 
-    public function __construct($openCloseCsvFile = new OpenCloseCsvFile())
+    public function __construct(OpenCloseCsvFile $openCloseFile = new OpenCloseCsvFile())
     {
-        $this->openCloseCsvFile = $openCloseCsvFile;
+        $this->openCloseFile = $openCloseFile;
     }
 
-    public function getRows($fileReportCsv): Generator
+    public function getRows($fileReportCsv): \Generator
     {
-        $handle = $this->openCloseCsvFile->openFile($fileReportCsv);
+        $handle = $this->openCloseFile->openFile($fileReportCsv);
         $headers = self::getHeaders($fileReportCsv);
 
         fgets($handle);
 
-        while (!feof($handle)) {
-            $values = fgetcsv($handle, separator: self::SEPARATOR);
-
-            yield self::createRow($headers, $values);
+        while (($values = fgetcsv($handle, separator: self::SEPARATOR)) !== false) {
+            yield self::createItemFromRow($headers, $values);
         }
 
-        $this->openCloseCsvFile->closeFile($handle);
+        $this->openCloseFile->closeFile($handle);
     }
 
-    public function getRowsChunks($fileReportCsv, $chunkSize = self::DEFAULT_CHUNK_SIZE): Generator
+    public function getRowsChunks($fileReportCsv, $chunkSize = self::DEFAULT_CHUNK_SIZE): \Generator
     {
-        $chunkSize = self::chunkSizeCorrect($chunkSize);
+        $chunkSize = self::correctChunkSize($chunkSize);
 
         $rows = [];
 
-        foreach (self::getRows($fileReportCsv) as $row)
-        {
+        foreach (self::getRows($fileReportCsv) as $row) {
             $rows[] = $row;
 
             if (count($rows) >= $chunkSize) {
@@ -51,7 +48,7 @@ class CsvReaderForReport
         yield $rows;
     }
 
-    private static function chunkSizeCorrect(int $chunkSize): int
+    private static function correctChunkSize(int $chunkSize): int
     {
        if ($chunkSize <= 0) {
            $chunkSize = self::DEFAULT_CHUNK_SIZE;
@@ -62,15 +59,15 @@ class CsvReaderForReport
 
     private function getHeaders($fileReportCsv): bool|array
     {
-        $handle = $this->openCloseCsvFile->openFile($fileReportCsv);
+        $handle = $this->openCloseFile->openFile($fileReportCsv);
 
         return fgetcsv($handle, separator: self::SEPARATOR);
     }
 
-    private function createRow(array|bool $headers, array|bool $values): object
+    private function createItemFromRow(array $headers, array $values): object
     {
         $row = new Row($headers, $values);
 
-        return $row->createCell();
+        return $row->createItem();
     }
 }
