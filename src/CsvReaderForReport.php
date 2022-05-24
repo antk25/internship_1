@@ -11,7 +11,7 @@ class CsvReaderForReport
 
     private OpenCloseFileInterface $openCloseFile;
 
-    public function __construct(OpenCloseCsvFile $openCloseFile = new OpenCloseCsvFile())
+    public function __construct(OpenCloseFileInterface $openCloseFile)
     {
         $this->openCloseFile = $openCloseFile;
     }
